@@ -31,7 +31,7 @@ def get_reddit_content(message):
                 arr = response_data.split('.mp4')
                 sub = arr[0]
                 resolution_arr = arr[1].split('"height":')
-                resolution = resolution_arr[1][0:3]
+                resolution = resolution_arr[1][0:resolution_arr[1].find(',')]
                 bot.reply_to(message, sub[-39:-2] + resolution + '.mp4')
             else:
                 file = open("logs_fails.txt", "a")
