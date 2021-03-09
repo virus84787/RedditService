@@ -30,7 +30,9 @@ def get_reddit_content(message):
                 file.close()
                 arr = response_data.split('.mp4')
                 sub = arr[0]
-                bot.reply_to(message, sub[-39:-2] + '240.mp4')
+                resolution_arr = arr[1].split('"height":')
+                resolution = resolution_arr[1][0:3]
+                bot.reply_to(message, sub[-39:-2] + resolution + '.mp4')
             else:
                 file = open("logs_fails.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
