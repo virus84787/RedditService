@@ -10,7 +10,7 @@ bot = telebot.TeleBot(config.TOKEN)
 def get_reddit_content(message):
     if "https://www.reddit.com/" in message.text:
         now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
+        current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         url_message = message.text
         start_url = url_message.find("https")
         url = url_message[start_url:]
@@ -33,6 +33,20 @@ def get_reddit_content(message):
                 resolution_arr = arr[1].split('"height":')
                 resolution = resolution_arr[1][0:resolution_arr[1].find(',')]
                 bot.reply_to(message, sub[-39:-2] + resolution + '.mp4')
+            elif '_3BxRNDoASi9FbGX01ewiLg' in response_data:
+                arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
+                for sub in arr:
+                    if 'href="https://preview.redd.it/' in sub:
+                        draft_url = sub[sub.find('https://preview.redd.it/'):]
+                        url = draft_url[:draft_url.find('"')]
+                        bot.reply_to(message, url.replace('amp;', ''))
+            # elif '_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
+            #     arr = response_data.split('"_3spkFGVnKMHZ83pDAhW3Mx')
+            #     for sub in arr:
+            #         if 'href="https://preview.redd.it/' in sub:
+            #             draft_url = sub[sub.find('https://preview.redd.it/'):]
+            #             url = draft_url[:draft_url.find('"')]
+            #             bot.reply_to(message, url.replace('amp;', ''))
             else:
                 file = open("logs_fails.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
