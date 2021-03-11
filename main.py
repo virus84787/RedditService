@@ -15,7 +15,13 @@ def get_reddit_content(message):
         start_url = url_message.find("https")
         url = url_message[start_url:]
         try:
-            url_response = urllib.request.urlopen(url)
+            try:
+                url_response = urllib.request.urlopen(url)
+            except Exception as e:
+                try:
+                    url_response = urllib.request.urlopen(url)
+                except Exception as e:
+                    url_response = urllib.request.urlopen(url)
             response_data = url_response.read().decode('utf-8')
             if '"type":"image"' in response_data:
                 file = open("logs_images.txt", "a")
@@ -32,7 +38,11 @@ def get_reddit_content(message):
                 sub = arr[0]
                 resolution_arr = arr[1].split('"height":')
                 resolution = resolution_arr[1][0:resolution_arr[1].find(',')]
-                bot.reply_to(message, sub[-39:-2] + resolution + '.mp4')
+                try:
+                    urllib.request.urlopen(sub[-39:-2] + resolution + '.mp4')
+                    bot.reply_to(message, sub[-39:-2] + resolution + '.mp4')
+                except Exception as e:
+                    bot.reply_to(message, sub[-39:-2] + '240.mp4')
             elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 for sub in arr:
