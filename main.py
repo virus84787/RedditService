@@ -34,6 +34,12 @@ def get_reddit_content(message):
                 arr = response_data.split('"type":"image"')
                 sub = arr[0]
                 bot.reply_to(message, sub[-37:-2])
+            elif '"type":"gifvideo"' in response_data:
+                arr = response_data.split('"type":"gifvideo"')
+                sub = arr[0][-200:]
+                draft_url = sub[sub.find('https://preview.redd.it/'):]
+                url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, url.replace("\\u0026", "&"))
             elif '.mp4' in response_data:
                 file = open("logs_videos.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
