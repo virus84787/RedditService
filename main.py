@@ -1,4 +1,8 @@
+import os
+
 import telebot
+from telebot.types import InputMediaPhoto
+
 import config
 import urllib.request
 from datetime import datetime
@@ -43,6 +47,10 @@ def get_reddit_content(message):
                     bot.reply_to(message, sub[-39:-2] + resolution + '.mp4')
                 except Exception as e:
                     bot.reply_to(message, sub[-39:-2] + '240.mp4')
+            elif 'https://i.imgur.com/' in response_data:
+                draft_url = response_data[response_data.find('https://i.imgur.com/'):]
+                url = draft_url[:draft_url.find('"')-4]
+                bot.reply_to(message, url + 'mp4')
             elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 for sub in arr:
