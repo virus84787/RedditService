@@ -33,13 +33,14 @@ def get_reddit_content(message):
                 file = open("logs_images.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
                 file.close()
-                arr = response_data.split('"type":"image"')
-                sub = arr[0]
-                urllib.request.urlretrieve(sub[-37:-2], "local-filename.jpg")
+                point = response_data.find('"type":"image"')
+                start_url = response_data.find("https://", point-200)
+                end_url = response_data.find('"', start_url)
+                draft_url = response_data[start_url: end_url]
+                urllib.request.urlretrieve(draft_url.replace("\\u0026", "&"), "local-filename.jpg")
                 foto = open('local-filename.jpg', 'rb')
                 os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None, message.id)
-                # bot.reply_to(message, sub[-37:-2])
             elif '"type":"gifvideo"' in response_data:
                 arr = response_data.split('"type":"gifvideo"')
                 sub = arr[0][-200:]
@@ -93,6 +94,16 @@ def get_reddit_content(message):
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
+            elif 'property="og:image"' in response_data:
+                point = response_data.find('property="og:image"')
+                start_url = response_data.find("https://", point)
+                end_url = response_data.find('"', start_url)
+                draft_url = response_data[start_url: end_url]
+                urllib.request.urlretrieve(draft_url.replace("amp;", ''), "local-filename.jpg")
+                foto = open('local-filename.jpg', 'rb')
+                os.remove("local-filename.jpg")
+                bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None,
+                                     message.id)
             else:
                 file = open("logs_fails.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
