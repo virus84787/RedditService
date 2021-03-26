@@ -6,9 +6,21 @@ from telebot.types import InputMediaPhoto
 import config
 import urllib.request
 from datetime import datetime
+from urllib.parse import quote, urlsplit, urlunsplit
 
 bot = telebot.TeleBot(config.TOKEN)
 
+
+def iri_to_uri(iri):
+    parts = urlsplit(iri)
+    uri = urlunsplit((
+        parts.scheme,
+        parts.netloc.encode('idna').decode('ascii'),
+        quote(parts.path),
+        quote(parts.query, '='),
+        quote(parts.fragment),
+    ))
+    return uri
 
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
@@ -17,7 +29,7 @@ def get_reddit_content(message):
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         url_message = message.text
         start_url = url_message.find("https")
-        url = url_message[start_url:]
+        url = iri_to_uri(url_message[start_url:])
         try:
             try:
                 url_response = urllib.request.urlopen(url)
@@ -71,13 +83,14 @@ def get_reddit_content(message):
                     if 'href="https://preview.redd.it/' in sub:
                         draft_url = sub[sub.find('https://preview.redd.it/'):]
                         url = draft_url[:draft_url.find('"')]
-                        urllib.request.urlretrieve(url.replace('amp;', ''), "local-filename.jpg")
-                        foto = open('local-filename.jpg', 'rb')
+                        image_dimension = url[url.find("?")-3:url.find("?")]
+                        urllib.request.urlretrieve(url.replace('amp;', ''), "local-filename."+ image_dimension)
+                        foto = open('local-filename.'+ image_dimension, 'rb')
                         if len(img_arr) == 0:
                             img_arr.append(InputMediaPhoto(foto, tittle[0:tittle.find(':')]))
                         else:
                             img_arr.append(InputMediaPhoto(foto))
-                        os.remove("local-filename.jpg")
+                        os.remove("local-filename."+ image_dimension)
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
             elif 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
                 arr = response_data.split('class="_3spkFGVnKMHZ83pDAhW3Mx')
@@ -94,7 +107,7 @@ def get_reddit_content(message):
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
-            elif 'property="og:image"' in response_data:
+            elif '<meta property="og:type" content="image" />' in response_data:
                 point = response_data.find('property="og:image"')
                 start_url = response_data.find("https://", point)
                 end_url = response_data.find('"', start_url)
