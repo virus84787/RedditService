@@ -40,7 +40,7 @@ def get_reddit_content(message):
                     url_response = urllib.request.urlopen(url)
             response_data = url_response.read().decode('utf-8')
             tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
-            tittle = tittle.replace("&#x27;","'")
+            tittle = tittle.replace("&#x27;","'").replace("&quot;","")
             if '"type":"image"' in response_data:
                 file = open("logs_images.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
@@ -56,9 +56,9 @@ def get_reddit_content(message):
             elif '"type":"gifvideo"' in response_data:
                 arr = response_data.split('"type":"gifvideo"')
                 sub = arr[0][-200:]
-                draft_url = sub[sub.find('https://preview.redd.it/'):]
+                draft_url = sub[sub.find('https://'):]
                 url = draft_url[:draft_url.find('"')]
-                bot.reply_to(message, url.replace("\\u0026", "&"))
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
             elif '.mp4' in response_data:
                 file = open("logs_videos.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
