@@ -42,9 +42,6 @@ def get_reddit_content(message):
             tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
             tittle = tittle.replace("&#x27;","'").replace("&quot;","")
             if '"type":"image"' in response_data:
-                file = open("logs_images.txt", "a")
-                file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
-                file.close()
                 point = response_data.find('"type":"image"')
                 start_url = response_data.find("https://", point-200)
                 end_url = response_data.find('"', start_url)
@@ -60,9 +57,6 @@ def get_reddit_content(message):
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
             elif '.mp4' in response_data:
-                file = open("logs_videos.txt", "a")
-                file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
-                file.close()
                 arr = response_data.split('.mp4')
                 sub = arr[0]
                 resolution_arr = arr[1].split('"height":')
