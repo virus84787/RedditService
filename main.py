@@ -30,9 +30,14 @@ def get_reddit_content(message):
         url_message = message.text
         start_url = url_message.find("https")
         url = iri_to_uri(url_message[start_url:])
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         try:
-            url_response = urllib.request.urlopen(req)
+            try:
+                url_response = urllib.request.urlopen(url)
+            except Exception as e:
+                try:
+                    url_response = urllib.request.urlopen(url)
+                except Exception as e:
+                    url_response = urllib.request.urlopen(url)
             response_data = url_response.read().decode('utf-8')
             tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
             tittle = tittle.replace("&#x27;","'").replace("&quot;","")
