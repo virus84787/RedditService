@@ -24,20 +24,22 @@ def iri_to_uri(iri):
 
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
-    if "https://www.reddit.com/" in message.text:
+     if "https://www.reddit.com/" in message.text:
         now = datetime.now()
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         url_message = message.text
         start_url = url_message.find("https")
         url = iri_to_uri(url_message[start_url:])
         try:
-            try:
-                url_response = urllib.request.urlopen(url)
-            except Exception as e:
+            retry_count = 0
+            url_response = ...
+            while(retry_count<=10):
                 try:
                     url_response = urllib.request.urlopen(url)
+                    break
                 except Exception as e:
-                    url_response = urllib.request.urlopen(url)
+                    retry_count += 1
+                    continue
             response_data = url_response.read().decode('utf-8')
             tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
             tittle = tittle.replace("&#x27;","'").replace("&quot;","")
@@ -63,7 +65,8 @@ def get_reddit_content(message):
                 resolution = resolution_arr[1][0:resolution_arr[1].find(',')]
                 try:
                     urllib.request.urlopen(sub[-39:-2] + resolution + '.mp4')
-                    bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + resolution + '.mp4')
+                    bot.send_message(message.chat.id, message.from_user.first_name + ' ' + message.from_user.last_name + '\n' + tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + resolution + '.mp4' + '\n\n'  + url)
+                    bot.delete_message(message.chat.id, message.id)
                 except Exception as e:
                     bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + '240.mp4')
             elif 'https://i.imgur.com/' in response_data:
@@ -117,6 +120,7 @@ def get_reddit_content(message):
                 file.close()
                 bot.reply_to(message, "image not found")
         except Exception as e:
+            bot.send_message('-556187948', 'Group tittle: ' + message.chat.title + '\n' + 'Error: ' + format(e))
             file = open("logs_errors.txt", "a")
             file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + format(e) + '\n' + '\n')
             file.close()
