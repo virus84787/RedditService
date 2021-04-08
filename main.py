@@ -25,6 +25,7 @@ def iri_to_uri(iri):
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
      if "https://www.reddit.com/" in message.text:
+        print(message.chat.title)
         now = datetime.now()
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         url_message = message.text
@@ -52,12 +53,14 @@ def get_reddit_content(message):
                 foto = open('local-filename.jpg', 'rb')
                 os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None, message.id)
+                print('Success: "type":"image"')
             elif '"type":"gifvideo"' in response_data:
                 arr = response_data.split('"type":"gifvideo"')
                 sub = arr[0][-200:]
                 draft_url = sub[sub.find('https://'):]
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
+                print('Success: "type":"gifvideo"')
             elif '.mp4' in response_data:
                 arr = response_data.split('.mp4')
                 sub = arr[0]
@@ -67,12 +70,15 @@ def get_reddit_content(message):
                     urllib.request.urlopen(sub[-39:-2] + resolution + '.mp4')
                     bot.send_message(message.chat.id, message.from_user.first_name + ' ' + message.from_user.last_name + '\n' + tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + resolution + '.mp4' + '\n\n'  + url)
                     bot.delete_message(message.chat.id, message.id)
+                    print('Success: ".mp4"')
                 except Exception as e:
                     bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + '240.mp4')
+                    print('Success: "240.mp4"')
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
                 url = draft_url[:draft_url.find('"')-4]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
+                print('Success: "https://i.imgur.com/"')
             elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 img_arr = []
@@ -89,6 +95,7 @@ def get_reddit_content(message):
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove("local-filename."+ image_dimension)
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
+                print('Success: "class="_3BxRNDoASi9FbGX01ewiLg"')
             elif 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
                 arr = response_data.split('class="_3spkFGVnKMHZ83pDAhW3Mx')
                 img_arr = []
@@ -104,6 +111,7 @@ def get_reddit_content(message):
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
+                print('Success: "class="_3spkFGVnKMHZ83pDAhW3Mx"')
             elif '<meta property="og:type" content="image" />' in response_data:
                 point = response_data.find('property="og:image"')
                 start_url = response_data.find("https://", point)
@@ -114,17 +122,19 @@ def get_reddit_content(message):
                 os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None,
                                      message.id)
+                print('Success: "property="og:image""')
             else:
                 file = open("logs_fails.txt", "a")
                 file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
                 file.close()
                 bot.reply_to(message, "image not found")
+                print("image not found")
         except Exception as e:
             bot.send_message('-556187948', 'Group tittle: ' + message.chat.title + '\n' + 'Error: ' + format(e))
             file = open("logs_errors.txt", "a")
             file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + format(e) + '\n' + '\n')
             file.close()
             bot.reply_to(message, "something went wrong")
-
+            print("something went wrong" + '\n' + format(e))
 
 bot.polling(none_stop=True)
