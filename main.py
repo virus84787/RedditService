@@ -38,12 +38,12 @@ def get_reddit_content(message):
             retry_count = 0
             url_response = ...
             while(retry_count<=10):
-                time.sleep(0.01)
                 try:
                     url_response = urllib.request.urlopen(url)
                     break
                 except Exception as e:
                     retry_count += 1
+                    time.sleep(1)
                     continue
             response_data = url_response.read().decode('utf-8')
             tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
