@@ -3,7 +3,7 @@ import os
 import telebot
 from telebot.types import InputMediaPhoto
 
-import config
+import config, time
 import urllib.request
 from datetime import datetime
 from urllib.parse import quote, urlsplit, urlunsplit
@@ -35,6 +35,7 @@ def get_reddit_content(message):
             retry_count = 0
             url_response = ...
             while(retry_count<=10):
+                time.sleep(0.01)
                 try:
                     url_response = urllib.request.urlopen(url)
                     break
