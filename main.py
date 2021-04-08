@@ -44,6 +44,8 @@ def get_reddit_content(message):
                 except Exception as e:
                     retry_count += 1
                     time.sleep(1)
+                    print("Retry - " + str(retry_count))
+                    bot.send_message('-556187948', 'Group tittle: ' + message.chat.title + '\n' + "Retry - " + str(retry_count))
                     continue
             response_data = url_response.read().decode('utf-8')
             tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
