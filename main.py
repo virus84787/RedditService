@@ -25,7 +25,7 @@ def iri_to_uri(iri):
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
      if "https://www.reddit.com/" in message.text:
-        print(message.chat.title)
+        print("Chat title: " + message.chat.title)
         now = datetime.now()
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         url_message = message.text
