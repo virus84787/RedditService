@@ -139,7 +139,10 @@ def get_reddit_content(message):
                 bot.reply_to(message, "image not found")
                 print("image not found")
         except Exception as e:
-            bot.send_message('-556187948', 'Group tittle: ' + message.chat.title + '\n' + 'Error: ' + format(e))
+            try:
+                bot.send_message('-556187948', 'Group tittle: ' + message.chat.title + '\n' + 'Error: ' + format(e))
+            except Exception as e:
+                bot.send_message('-556187948', 'Chat id: ' + str(message.chat.id) + '\n' + 'Error: ' + format(e))
             file = open("logs_errors.txt", "a")
             file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + format(e) + '\n' + '\n')
             file.close()
