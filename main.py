@@ -77,8 +77,7 @@ def get_reddit_content(message):
                 resolution = resolution_arr[1][0:resolution_arr[1].find(',')]
                 try:
                     urllib.request.urlopen(sub[-39:-2] + resolution + '.mp4')
-                    bot.send_message(message.chat.id, message.from_user.first_name + ' ' + message.from_user.last_name + '\n' + tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + resolution + '.mp4' + '\n\n'  + url)
-                    bot.delete_message(message.chat.id, message.id)
+                    bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + resolution + '.mp4')
                     print('Success: ".mp4"')
                 except Exception as e:
                     bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + '240.mp4')
