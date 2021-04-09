@@ -143,11 +143,11 @@ def get_reddit_content(message):
                 bot.reply_to(message, "image not found")
                 print(current_time + ' "image not found"')
         except Exception as e:
-            bot.send_message('-556187948', "Chat identity: " + chat_identity + '\n' + 'Error: ' + format(e))
+            bot.send_message('-556187948', "Chat identity: " + chat_identity + '\n' + 'Error: ' + str(e))
             file = open("logs_errors.txt", "a")
-            file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + format(e) + '\n' + '\n')
+            file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + str(e) + '\n' + '\n')
             file.close()
             bot.reply_to(message, "something went wrong")
-            print(current_time + ' something went wrong' + '\n' + format(e))
+            print(current_time + ' something went wrong' + '\n' + str(e))
 
 bot.polling(none_stop=True)
