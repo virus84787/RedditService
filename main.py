@@ -25,11 +25,10 @@ def iri_to_uri(iri):
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
      if "https://www.reddit.com/" in message.text:
-        chat_identity = message.chat.title if message.chat.id < 0 else str(message.chat.id)
-        print("Chat identity: " + chat_identity)
-
         now = datetime.now()
         current_time = now.strftime("%d/%m/%Y %H:%M:%S")
+        chat_identity = message.chat.title if message.chat.id < 0 else str(message.chat.id)
+        print(current_time + " Chat identity: " + chat_identity)
         url_message = message.text
         start_url = url_message.find("https")
         url = iri_to_uri(url_message[start_url:])
