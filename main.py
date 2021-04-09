@@ -69,6 +69,7 @@ def get_reddit_content(message):
                 resolution_arr = arr[1].split('"height":')
                 resolution = resolution_arr[1][0:resolution_arr[1].find(',')]
                 try:
+                    time.sleep(1)
                     urllib.request.urlopen(sub[-39:-2] + resolution + '.mp4')
                     bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + resolution + '.mp4')
                     print(current_time + ' Success: ".mp4"')
