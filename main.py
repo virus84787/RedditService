@@ -58,6 +58,7 @@ def get_reddit_content(message):
                 start_url = response_data.find("https://", point-200)
                 end_url = response_data.find('"', start_url)
                 draft_url = response_data[start_url: end_url]
+                time.sleep(1)
                 urllib.request.urlretrieve(draft_url.replace("\\u0026", "&"), "local-filename.jpg")
                 foto = open('local-filename.jpg', 'rb')
                 os.remove("local-filename.jpg")
@@ -96,6 +97,7 @@ def get_reddit_content(message):
                         draft_url = sub[sub.find('https://preview.redd.it/'):]
                         url = draft_url[:draft_url.find('"')]
                         image_dimension = url[url.find("?")-3:url.find("?")]
+                        time.sleep(1)
                         urllib.request.urlretrieve(url.replace('amp;', ''), "local-filename."+ image_dimension)
                         foto = open('local-filename.'+ image_dimension, 'rb')
                         if len(img_arr) == 0:
@@ -112,6 +114,7 @@ def get_reddit_content(message):
                     if 'href="https://preview.redd.it/' in sub:
                         draft_url = sub[sub.find('https://preview.redd.it/'):]
                         url = draft_url[:draft_url.find('"')]
+                        time.sleep(1)
                         urllib.request.urlretrieve(url.replace('amp;', ''), "local-filename.jpg")
                         foto = open('local-filename.jpg', 'rb')
                         if len(img_arr) == 0:
@@ -126,6 +129,7 @@ def get_reddit_content(message):
                 start_url = response_data.find("https://", point)
                 end_url = response_data.find('"', start_url)
                 draft_url = response_data[start_url: end_url]
+                time.sleep(1)
                 urllib.request.urlretrieve(draft_url.replace("amp;", ''), "local-filename.jpg")
                 foto = open('local-filename.jpg', 'rb')
                 os.remove("local-filename.jpg")
