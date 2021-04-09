@@ -32,13 +32,20 @@ def get_reddit_content(message):
         url_message = message.text
         start_url = url_message.find("https")
         url = iri_to_uri(url_message[start_url:])
+        req = urllib.request.Request(
+            url,
+            data=None,
+            headers={
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+            }
+        )
         try:
             retry_count = 1
             url_response = ...
             while(retry_count<=10):
                 try:
                     time.sleep(1)
-                    url_response = urllib.request.urlopen(url)
+                    url_response = urllib.request.urlopen(req)
                     break
                 except Exception as e:
                     bot.send_message('-556187948', "Chat identity: " + chat_identity + '\n' + "Retry - " + str(retry_count))
