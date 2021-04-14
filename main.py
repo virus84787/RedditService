@@ -1,7 +1,7 @@
 import os
 
 import telebot
-from telebot.types import InputMediaPhoto
+from telebot.types import InputMediaPhoto, InputMediaVideo
 
 import config, time
 import urllib.request
@@ -72,23 +72,63 @@ def get_reddit_content(message):
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
                 print(current_time + ' Success: "type":"gifvideo"')
             elif ('.mp4' in response_data) & ('.mp4,' not in response_data):
-                arr = response_data.split('.mp4')
+                arr = response_data.split('DASH_96.mp4"')
                 sub = arr[0]
                 resolution_arr = arr[1].split('"height":')
                 resolution = resolution_arr[1][0:resolution_arr[1].find(',')]
+
                 try:
-                    time.sleep(0.1)
-                    urllib.request.urlopen(sub[-39:-2] + resolution + '.mp4')
-                    bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + resolution + '.mp4')
-                    print(current_time + ' Success: ".mp4"')
+                    try:
+                        urllib.request.urlopen(sub[-32:] + 'DASH_480.mp4')
+                        url_for_combine = 'https://ds.redditsave.com/download-sd.php?permalink=' + url + '/&video_url=' + sub[
+                                                                                                                          -32:] + 'DASH_480.mp4' + '&audio_url=' + sub[
+                                                                                                                                                                   -32:] + 'DASH_audio.mp4'
+                    except Exception as e:
+                        print(current_time + ' Error 480.mp4 with sound: ' + str(e))
+                        try:
+                            time.sleep(0.01)
+                            urllib.request.urlopen(sub[-32:] + 'DASH_360.mp4')
+                            url_for_combine = 'https://ds.redditsave.com/download-sd.php?permalink=' + url + '/&video_url=' + sub[
+                                                                                                                              -32:] + 'DASH_360.mp4' + '&audio_url=' + sub[
+                                                                                                                                                                       -32:] + 'DASH_audio.mp4'
+                        except Exception as e:
+                            print(current_time + ' Error 360.mp4 with sound: ' + str(e))
+                            url_for_combine = 'https://ds.redditsave.com/download-sd.php?permalink=' + url + '/&video_url=' + sub[
+                                                                                                                              -32:] + 'DASH_240.mp4' + '&audio_url=' + sub[
+                                                                                                                                                                       -32:] + 'DASH_audio.mp4'
+                    urllib.request.urlretrieve(url_for_combine, "local-filename.mp4")
+                    video = open('local-filename.mp4', 'rb')
+                    os.remove("local-filename.mp4")
+                    bot.send_media_group(message.chat.id, [InputMediaVideo(video, None, tittle[0:tittle.find(':')])],
+                                         None, message.id)
+                    print(current_time + ' Success: ".mp4" with sound')
                 except Exception as e:
-                    bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-39:-2] + '240.mp4')
-                    print(current_time + ' Success: "240.mp4"')
+                    print(current_time + ' Error 240.mp4 with sound: ' + str(e))
+                    try:
+                        urllib.request.urlopen(sub[-32:] + 'DASH_' + resolution + '.mp4')
+                        bot.reply_to(message,
+                                     tittle[0:tittle.find(':')] + '\n' + sub[-32:] + 'DASH_' + resolution + '.mp4')
+                        print(current_time + ' Success: "resolution.mp4"')
+                    except Exception as e:
+                        print(current_time + ' Error resolution.mp4 without sound: ' + str(e))
+                        urllib.request.urlopen(sub[-32:] + 'DASH_240.mp4')
+                        bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-32:] + 'DASH_240.mp4')
+                        print(current_time + ' Success: "240.mp4"')
+
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
                 url = draft_url[:draft_url.find('"')-4]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
                 print(current_time + ' Success: "https://i.imgur.com/"')
+            elif 'https://gfycat.com/' in response_data:
+                draft_url = response_data[response_data.find('https://gfycat.com/'):]
+                inner_url = draft_url[:draft_url.find('"')]
+                inner_url_response = urllib.request.urlopen(inner_url)
+                inner_response_data = inner_url_response.read().decode('utf-8')
+                draft_url = inner_response_data[inner_response_data.find("og:video:secure_url")+30:]
+                url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url)
+                print(current_time + ' Success: "https://gfycat.com/"')
             elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 img_arr = []
