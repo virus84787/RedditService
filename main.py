@@ -22,13 +22,15 @@ def iri_to_uri(iri):
     ))
     return uri
 
+def get_current_time():
+    now = datetime.now()
+    return now.strftime("%d/%m/%Y %H:%M:%S")
+
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
      if "https://www.reddit.com/" in message.text:
-        now = datetime.now()
-        current_time = now.strftime("%d/%m/%Y %H:%M:%S")
         chat_identity = message.chat.title if message.chat.id < 0 else str(message.chat.id)
-        print(current_time + " Chat identity: " + chat_identity)
+        print('-------------------------' + '\n' + get_current_time() + " Chat identity: " + chat_identity)
         url_message = message.text
         start_url = url_message.find("https")
         url = iri_to_uri(url_message[start_url:])
@@ -63,14 +65,14 @@ def get_reddit_content(message):
                 foto = open('local-filename.jpg', 'rb')
                 os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None, message.id)
-                print(current_time + ' Success: "type":"image"')
+                print(get_current_time() + ' Success: "type":"image"')
             elif '"type":"gifvideo"' in response_data:
                 arr = response_data.split('"type":"gifvideo"')
                 sub = arr[0][-200:]
                 draft_url = sub[sub.find('https://'):]
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
-                print(current_time + ' Success: "type":"gifvideo"')
+                print(get_current_time() + ' Success: "type":"gifvideo"')
             elif ('.mp4' in response_data) & ('.mp4,' not in response_data):
                 arr = response_data.split('DASH_96.mp4"')
                 sub = arr[0]
@@ -79,20 +81,23 @@ def get_reddit_content(message):
 
                 try:
                     try:
+                        print(get_current_time() + ' Try: "480.mp4" with sound')
                         urllib.request.urlopen(sub[-32:] + 'DASH_480.mp4')
                         url_for_combine = 'https://ds.redditsave.com/download-sd.php?permalink=' + url + '/&video_url=' + sub[
                                                                                                                           -32:] + 'DASH_480.mp4' + '&audio_url=' + sub[
                                                                                                                                                                    -32:] + 'DASH_audio.mp4'
                     except Exception as e:
-                        print(current_time + ' Error 480.mp4 with sound: ' + str(e))
+                        print(get_current_time() + ' Error 480.mp4 with sound: ' + str(e))
                         try:
                             time.sleep(0.01)
+                            print(get_current_time() + ' Try: "360.mp4" with sound')
                             urllib.request.urlopen(sub[-32:] + 'DASH_360.mp4')
                             url_for_combine = 'https://ds.redditsave.com/download-sd.php?permalink=' + url + '/&video_url=' + sub[
                                                                                                                               -32:] + 'DASH_360.mp4' + '&audio_url=' + sub[
                                                                                                                                                                        -32:] + 'DASH_audio.mp4'
                         except Exception as e:
-                            print(current_time + ' Error 360.mp4 with sound: ' + str(e))
+                            print(get_current_time() + ' Error 360.mp4 with sound: ' + str(e))
+                            print(get_current_time() + ' Try: "240.mp4" with sound')
                             url_for_combine = 'https://ds.redditsave.com/download-sd.php?permalink=' + url + '/&video_url=' + sub[
                                                                                                                               -32:] + 'DASH_240.mp4' + '&audio_url=' + sub[
                                                                                                                                                                        -32:] + 'DASH_audio.mp4'
@@ -101,25 +106,25 @@ def get_reddit_content(message):
                     os.remove("local-filename.mp4")
                     bot.send_media_group(message.chat.id, [InputMediaVideo(video, None, tittle[0:tittle.find(':')])],
                                          None, message.id)
-                    print(current_time + ' Success: ".mp4" with sound')
+                    print(get_current_time() + ' Success: ".mp4" with sound')
                 except Exception as e:
-                    print(current_time + ' Error 240.mp4 with sound: ' + str(e))
+                    print(get_current_time() + ' Error 240.mp4 with sound: ' + str(e))
                     try:
                         urllib.request.urlopen(sub[-32:] + 'DASH_' + resolution + '.mp4')
                         bot.reply_to(message,
                                      tittle[0:tittle.find(':')] + '\n' + sub[-32:] + 'DASH_' + resolution + '.mp4')
-                        print(current_time + ' Success: "resolution.mp4"')
+                        print(get_current_time() + ' Success: "resolution.mp4"')
                     except Exception as e:
-                        print(current_time + ' Error resolution.mp4 without sound: ' + str(e))
+                        print(get_current_time() + ' Error resolution.mp4 without sound: ' + str(e))
                         urllib.request.urlopen(sub[-32:] + 'DASH_240.mp4')
                         bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-32:] + 'DASH_240.mp4')
-                        print(current_time + ' Success: "240.mp4"')
+                        print(get_current_time() + ' Success: "240.mp4"')
 
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
                 url = draft_url[:draft_url.find('"')-4]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
-                print(current_time + ' Success: "https://i.imgur.com/"')
+                print(get_current_time() + ' Success: "https://i.imgur.com/"')
             elif 'https://gfycat.com/' in response_data:
                 draft_url = response_data[response_data.find('https://gfycat.com/'):]
                 inner_url = draft_url[:draft_url.find('"')]
@@ -128,7 +133,7 @@ def get_reddit_content(message):
                 draft_url = inner_response_data[inner_response_data.find("og:video:secure_url")+30:]
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url)
-                print(current_time + ' Success: "https://gfycat.com/"')
+                print(get_current_time() + ' Success: "https://gfycat.com/"')
             elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 img_arr = []
@@ -146,7 +151,7 @@ def get_reddit_content(message):
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove("local-filename."+ image_dimension)
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
-                print(current_time + ' Success: "class="_3BxRNDoASi9FbGX01ewiLg"')
+                print(get_current_time() + ' Success: "class="_3BxRNDoASi9FbGX01ewiLg"')
             elif 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
                 arr = response_data.split('class="_3spkFGVnKMHZ83pDAhW3Mx')
                 img_arr = []
@@ -163,7 +168,7 @@ def get_reddit_content(message):
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
-                print(current_time + ' Success: "class="_3spkFGVnKMHZ83pDAhW3Mx"')
+                print(get_current_time() + ' Success: "class="_3spkFGVnKMHZ83pDAhW3Mx"')
             elif '<meta property="og:type" content="image" />' in response_data:
                 point = response_data.find('property="og:image"')
                 start_url = response_data.find("https://", point)
@@ -175,19 +180,19 @@ def get_reddit_content(message):
                 os.remove("local-filename.jpg")
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None,
                                      message.id)
-                print(current_time + ' Success: "property="og:image""')
+                print(get_current_time() + ' Success: "property="og:image""')
             else:
                 file = open("logs_fails.txt", "a")
-                file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
+                file.write(get_current_time() + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
                 file.close()
                 bot.reply_to(message, "image not found")
-                print(current_time + ' "image not found"')
+                print(get_current_time() + ' "image not found"')
         except Exception as e:
             bot.send_message('-556187948', "Chat identity: " + chat_identity + '\n' + 'Error: ' + str(e))
             file = open("logs_errors.txt", "a")
-            file.write(current_time + '\n' + str(message.chat.id) + '\n' + url + '\n' + str(e) + '\n' + '\n')
+            file.write(get_current_time() + '\n' + str(message.chat.id) + '\n' + url + '\n' + str(e) + '\n' + '\n')
             file.close()
             bot.reply_to(message, "something went wrong")
-            print(current_time + ' something went wrong' + '\n' + str(e))
+            print(get_current_time() + ' something went wrong' + '\n' + str(e))
 
 bot.polling(none_stop=True)
