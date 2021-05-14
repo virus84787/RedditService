@@ -55,9 +55,9 @@ def get_reddit_content(message):
             response_data = url_response.read().decode('utf-8')
             tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
             tittle = tittle.replace("&#x27;","'").replace("&quot;","")
-            if '"type":"image"' in response_data:
+            if ('"type":"image"' in response_data) & ('https://i.imgur.com/' not in response_data):
                 point = response_data.find('"type":"image"')
-                start_url = response_data.find("https://", point-200)
+                start_url = response_data.find("https://", point-100)
                 end_url = response_data.find('"', start_url)
                 draft_url = response_data[start_url: end_url]
                 time.sleep(0.1)
@@ -73,7 +73,7 @@ def get_reddit_content(message):
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
                 print(get_current_time() + ' Success: "type":"gifvideo"')
-            elif ('.mp4' in response_data) & ('.mp4,' not in response_data):
+            elif ('DASH_96.mp4' in response_data) & ('.mp4,' not in response_data):
                 arr = response_data.split('DASH_96.mp4"')
                 sub = arr[0]
                 resolution_arr = arr[1].split('"height":')
@@ -123,8 +123,17 @@ def get_reddit_content(message):
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
                 url = draft_url[:draft_url.find('"')-4]
-                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
+                try:
+                    urllib.request.urlopen(url + 'mp4')
+                    bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
+                except Exception as e:
+                    bot.reply_to(message, url)
                 print(get_current_time() + ' Success: "https://i.imgur.com/"')
+            elif 'https://a.kyouko.se/' in response_data:
+                draft_url = response_data[response_data.find('https://a.kyouko.se/'):]
+                url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url)
+                print(get_current_time() + ' Success: "https://a.kyouko.se/"')
             elif 'https://gfycat.com/' in response_data:
                 draft_url = response_data[response_data.find('https://gfycat.com/'):]
                 inner_url = draft_url[:draft_url.find('"')]
