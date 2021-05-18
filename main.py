@@ -73,9 +73,9 @@ def get_reddit_content(message):
                 end_url = response_data.find('"', start_url)
                 draft_url = response_data[start_url: end_url]
                 time.sleep(0.1)
-                urllib.request.urlretrieve(draft_url.replace("\\u0026", "&"), "local-filename.jpg")
-                foto = open('local-filename.jpg', 'rb')
-                os.remove("local-filename.jpg")
+                urllib.request.urlretrieve(draft_url.replace("\\u0026", "&"), str(id)+".jpg")
+                foto = open(str(id) + '.jpg', 'rb')
+                os.remove(str(id)+".jpg")
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "type":"image"')
             elif '"type":"gifvideo"' in response_data:
@@ -113,9 +113,9 @@ def get_reddit_content(message):
                             url_for_combine = 'https://ds.redditsave.com/download-sd.php?permalink=' + url + '/&video_url=' + sub[
                                                                                                                               -32:] + 'DASH_240.mp4' + '&audio_url=' + sub[
                                                                                                                                                                        -32:] + 'DASH_audio.mp4'
-                    urllib.request.urlretrieve(url_for_combine, "local-filename.mp4")
-                    video = open('local-filename.mp4', 'rb')
-                    os.remove("local-filename.mp4")
+                    urllib.request.urlretrieve(url_for_combine, str(id)+".mp4")
+                    video = open(str(id) + '.mp4', 'rb')
+                    os.remove(str(id)+".mp4")
                     bot.send_media_group(message.chat.id, [InputMediaVideo(video, None, tittle[0:tittle.find(':')])],
                                          None, message.id)
                     print(get_current_time() + " id: " + str(id) + ' Success: ".mp4" with sound')
@@ -164,13 +164,13 @@ def get_reddit_content(message):
                         url = draft_url[:draft_url.find('"')]
                         image_dimension = url[url.find("?")-3:url.find("?")]
                         time.sleep(0.1)
-                        urllib.request.urlretrieve(url.replace('amp;', ''), "local-filename."+ image_dimension)
-                        foto = open('local-filename.'+ image_dimension, 'rb')
+                        urllib.request.urlretrieve(url.replace('amp;', ''), str(id)+"."+ image_dimension)
+                        foto = open(str(id) + '.'+ image_dimension, 'rb')
                         if len(img_arr) == 0:
                             img_arr.append(InputMediaPhoto(foto, tittle[0:tittle.find(':')]))
                         else:
                             img_arr.append(InputMediaPhoto(foto))
-                        os.remove("local-filename."+ image_dimension)
+                        os.remove(str(id)+"."+ image_dimension)
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "class="_3BxRNDoASi9FbGX01ewiLg"')
             elif 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
@@ -181,13 +181,13 @@ def get_reddit_content(message):
                         draft_url = sub[sub.find('https://preview.redd.it/'):]
                         url = draft_url[:draft_url.find('"')]
                         time.sleep(0.1)
-                        urllib.request.urlretrieve(url.replace('amp;', ''), "local-filename.jpg")
-                        foto = open('local-filename.jpg', 'rb')
+                        urllib.request.urlretrieve(url.replace('amp;', ''), str(id)+".jpg")
+                        foto = open(str(id) + '.jpg', 'rb')
                         if len(img_arr) == 0:
                             img_arr.append(InputMediaPhoto(foto, tittle[0:tittle.find(':')]))
                         else:
                             img_arr.append(InputMediaPhoto(foto))
-                        os.remove("local-filename.jpg")
+                        os.remove(str(id)+".jpg")
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "class="_3spkFGVnKMHZ83pDAhW3Mx"')
             elif '<meta property="og:type" content="image" />' in response_data:
@@ -196,9 +196,9 @@ def get_reddit_content(message):
                 end_url = response_data.find('"', start_url)
                 draft_url = response_data[start_url: end_url]
                 time.sleep(0.1)
-                urllib.request.urlretrieve(draft_url.replace("amp;", ''), "local-filename.jpg")
-                foto = open('local-filename.jpg', 'rb')
-                os.remove("local-filename.jpg")
+                urllib.request.urlretrieve(draft_url.replace("amp;", ''), str(id)+".jpg")
+                foto = open(str(id) + '.jpg', 'rb')
+                os.remove(str(id)+".jpg")
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None,
                                      message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "property="og:image""')
