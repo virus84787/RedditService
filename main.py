@@ -24,7 +24,7 @@ def iri_to_uri(iri):
 
 def get_current_time():
     now = datetime.now()
-    return now.strftime("%Y-%m-%d %H:%M:%S,%f")[:-3]
+    return now.strftime("%d/%m/%Y %H:%M:%S")
 
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
