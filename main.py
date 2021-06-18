@@ -85,6 +85,15 @@ def get_reddit_content(message):
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
                 print(get_current_time() + " id: " + str(id) + ' Success: "type":"gifvideo"')
+            elif 'https://gfycat.com/' in response_data:
+                draft_url = response_data[response_data.find('https://gfycat.com/'):]
+                inner_url = draft_url[:draft_url.find('"')]
+                inner_url_response = urllib.request.urlopen(inner_url)
+                inner_response_data = inner_url_response.read().decode('utf-8')
+                draft_url = inner_response_data[inner_response_data.find("og:video:secure_url")+30:]
+                url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url)
+                print(get_current_time() + " id: " + str(id) + ' Success: "https://gfycat.com/"')
             elif ('.mp4' in response_data) & ('.mp4,' not in response_data):
                 arr = response_data.split('DASH_96.mp4"')
                 sub = arr[0]
@@ -131,21 +140,11 @@ def get_reddit_content(message):
                         urllib.request.urlopen(sub[-32:] + 'DASH_240.mp4')
                         bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + sub[-32:] + 'DASH_240.mp4')
                         print(get_current_time() + " id: " + str(id) + ' Success: "240.mp4"')
-
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
                 url = draft_url[:draft_url.find('"')-4]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://i.imgur.com/"')
-            elif 'https://gfycat.com/' in response_data:
-                draft_url = response_data[response_data.find('https://gfycat.com/'):]
-                inner_url = draft_url[:draft_url.find('"')]
-                inner_url_response = urllib.request.urlopen(inner_url)
-                inner_response_data = inner_url_response.read().decode('utf-8')
-                draft_url = inner_response_data[inner_response_data.find("og:video:secure_url")+30:]
-                url = draft_url[:draft_url.find('"')]
-                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url)
-                print(get_current_time() + " id: " + str(id) + ' Success: "https://gfycat.com/"')
             elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 img_arr = []
