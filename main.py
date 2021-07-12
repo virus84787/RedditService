@@ -192,6 +192,26 @@ def get_reddit_content(message):
                 bot.send_media_group(message.chat.id, [InputMediaPhoto(foto, tittle[0:tittle.find(':')])], None,
                                      message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "property="og:image""')
+            elif 'https://streamwo.com/' in response_data:
+                draft_url = response_data[response_data.find('https://streamwo.com/'):]
+                inner_url = draft_url[:draft_url.find('"')]
+                req = urllib.request.Request(
+                    inner_url,
+                    data=None,
+                    headers={
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.47 Safari/537.36'
+                    }
+                )
+                inner_url_response = urllib.request.urlopen(req)
+                inner_response_data = inner_url_response.read().decode('utf-8')
+                draft_url = inner_response_data[inner_response_data.find("source src=") + 12:]
+                url = draft_url[:draft_url.find('"')]
+                urllib.request.urlretrieve(url, str(id) + ".mp4")
+                video = open(str(id) + '.mp4', 'rb')
+                os.remove(str(id) + ".mp4")
+                bot.send_media_group(message.chat.id, [InputMediaVideo(video, None, tittle[0:tittle.find(':')])],
+                                     None, message.id)
+                print(get_current_time() + " id: " + str(id) + ' Success: "https://streamwo.com/')
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
                 url = draft_url[:draft_url.find('"')-4]
