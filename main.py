@@ -250,12 +250,12 @@ def get_reddit_content(message):
             elif 'https://m.youtube.com/' in response_data:
                 draft_url = response_data[response_data.find('https://m.youtube.com/'):]
                 inner_url = draft_url[:draft_url.find('"')]
-                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url)
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url.replace('amp;', ''))
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://m.youtube.com/"')
             elif 'https://youtube.com/' in response_data:
                 draft_url = response_data[response_data.find('https://youtube.com/'):]
                 inner_url = draft_url[:draft_url.find('"')]
-                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url)
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url.replace('amp;', ''))
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://youtube.com/"')
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
