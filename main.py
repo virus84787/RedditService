@@ -212,11 +212,6 @@ def get_reddit_content(message):
                 bot.send_media_group(message.chat.id, [InputMediaVideo(video, None, tittle[0:tittle.find(':')])],
                                      None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://streamwo.com/')
-            elif 'https://i.imgur.com/' in response_data:
-                draft_url = response_data[response_data.find('https://i.imgur.com/'):]
-                url = draft_url[:draft_url.find('"')-4]
-                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
-                print(get_current_time() + " id: " + str(id) + ' Success: "https://i.imgur.com/"')
             elif 'https://streamable.com/' in response_data:
                 draft_url = response_data[response_data.find('https://streamable.com/'):]
                 inner_url = draft_url[:draft_url.find('"')]
@@ -230,6 +225,21 @@ def get_reddit_content(message):
                 bot.send_media_group(message.chat.id, [InputMediaVideo(video, None, tittle[0:tittle.find(':')])],
                                      None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://streamable.com/')
+            elif 'https://m.youtube.com/' in response_data:
+                draft_url = response_data[response_data.find('https://m.youtube.com/'):]
+                inner_url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url)
+                print(get_current_time() + " id: " + str(id) + ' Success: "https://m.youtube.com/"')
+            elif 'https://youtube.com/' in response_data:
+                draft_url = response_data[response_data.find('https://youtube.com/'):]
+                inner_url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url)
+                print(get_current_time() + " id: " + str(id) + ' Success: "https://youtube.com/"')
+            elif 'https://i.imgur.com/' in response_data:
+                draft_url = response_data[response_data.find('https://i.imgur.com/'):]
+                url = draft_url[:draft_url.find('"')-4]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url + 'mp4')
+                print(get_current_time() + " id: " + str(id) + ' Success: "https://i.imgur.com/"')
             else:
                 file = open("logs_fails.txt", "a")
                 file.write(get_current_time() + " id: " + str(id) + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
