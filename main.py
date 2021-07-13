@@ -257,6 +257,11 @@ def get_reddit_content(message):
                 inner_url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url.replace('amp;', ''))
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://youtube.com/"')
+            elif 'https://youtu.be/' in response_data:
+                draft_url = response_data[response_data.find('https://youtu.be/'):]
+                inner_url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url.replace('amp;', ''))
+                print(get_current_time() + " id: " + str(id) + ' Success: "https://youtu.be/"')
             elif 'https://i.imgur.com/' in response_data:
                 draft_url = response_data[response_data.find('https://i.imgur.com/'):]
                 url = draft_url[:draft_url.find('"')-4]
