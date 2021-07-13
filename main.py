@@ -148,6 +148,9 @@ def get_reddit_content(message):
             elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 img_arr = []
+                img_count = 0
+                part_string = ""
+                part_count = 0
                 for sub in arr:
                     if 'href="https://preview.redd.it/' in sub:
                         draft_url = sub[sub.find('https://preview.redd.it/'):]
@@ -157,15 +160,26 @@ def get_reddit_content(message):
                         urllib.request.urlretrieve(url.replace('amp;', ''), str(id)+"."+ image_dimension)
                         foto = open(str(id) + '.'+ image_dimension, 'rb')
                         if len(img_arr) == 0:
-                            img_arr.append(InputMediaPhoto(foto, tittle[0:tittle.find(':')]))
+                            if len(arr) > 21:
+                                part_count += 1
+                                part_string = " (Part " + str(part_count) + ")"
+                            img_arr.append(InputMediaPhoto(foto, tittle[0:tittle.find(':')] + part_string))
                         else:
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove(str(id)+"."+ image_dimension)
+                        img_count += 1
+                        if img_count == 9:
+                            bot.send_media_group(message.chat.id, img_arr, None, message.id)
+                            img_arr = []
+                            img_count = 0
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "class="_3BxRNDoASi9FbGX01ewiLg"')
             elif 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
                 arr = response_data.split('class="_3spkFGVnKMHZ83pDAhW3Mx')
                 img_arr = []
+                img_count = 0
+                part_string = ""
+                part_count = 0
                 for sub in arr:
                     if 'href="https://preview.redd.it/' in sub:
                         draft_url = sub[sub.find('https://preview.redd.it/'):]
@@ -174,10 +188,18 @@ def get_reddit_content(message):
                         urllib.request.urlretrieve(url.replace('amp;', ''), str(id)+".jpg")
                         foto = open(str(id) + '.jpg', 'rb')
                         if len(img_arr) == 0:
-                            img_arr.append(InputMediaPhoto(foto, tittle[0:tittle.find(':')]))
+                            if len(arr) > 20:
+                                part_count += 1
+                                part_string = " (Part " + str(part_count) + ")"
+                            img_arr.append(InputMediaPhoto(foto, tittle[0:tittle.find(':')] + part_string))
                         else:
                             img_arr.append(InputMediaPhoto(foto))
                         os.remove(str(id)+".jpg")
+                        img_count += 1
+                        if img_count == 9:
+                            bot.send_media_group(message.chat.id, img_arr, None, message.id)
+                            img_arr = []
+                            img_count = 0
                 bot.send_media_group(message.chat.id, img_arr, None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "class="_3spkFGVnKMHZ83pDAhW3Mx"')
             elif '<meta property="og:type" content="image" />' in response_data:
