@@ -1,6 +1,6 @@
 import os
 
-import telebot
+import telebot, json
 from telebot.types import InputMediaPhoto, InputMediaVideo
 
 import config, time
@@ -143,6 +143,11 @@ def get_reddit_content(message):
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url)
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://gfycat.com/"')
+            elif 'https://clips.twitch.tv' in response_data:
+                draft_url = response_data[response_data.find('https://clips.twitch.tv'):]
+                inner_url = draft_url[:draft_url.find('"')]
+                bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url)
+                print(get_current_time() + " id: " + str(id) + ' Success: "https://clips.twitch.tv"')
             elif '"type":"gifvideo"' in response_data:
                 arr = response_data.split('"type":"gifvideo"')
                 sub = arr[0][-200:]
