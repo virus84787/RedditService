@@ -155,8 +155,16 @@ def get_reddit_content(message):
                 url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + url.replace("\\u0026", "&"))
                 print(get_current_time() + " id: " + str(id) + ' Success: "type":"gifvideo"')
-            elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data or 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
-                separator = '_3BxRNDoASi9FbGX01ewiLg' if 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data else '_3spkFGVnKMHZ83pDAhW3Mx'
+            elif 'class="_3BxRNDoASi9FbGX01ewiLg' in response_data or 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data or 'class="_35oEP5zLnhKEbj5BlkTBUA' in response_data:
+                separator = ''
+                if  'class="_3BxRNDoASi9FbGX01ewiLg' in response_data:
+                    separator = 'class="_3BxRNDoASi9FbGX01ewiLg'
+                elif 'class="_3spkFGVnKMHZ83pDAhW3Mx' in response_data:
+                    separator = 'class="_3spkFGVnKMHZ83pDAhW3Mx'
+                elif 'class="_35oEP5zLnhKEbj5BlkTBUA' in response_data:
+                    separator = 'class="_35oEP5zLnhKEbj5BlkTBUA'
+                else:
+                    print(get_current_time() + " id: " + str(id) + ' Unsupport multimedia separator')
                 arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
                 img_arr = []
                 img_count = 0
@@ -232,7 +240,9 @@ def get_reddit_content(message):
                                      None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://streamable.com/')
             elif 'youtu' in response_data:
-                draft_url = response_data[response_data.find('youtu'):]
+                draft_url = response_data[response_data.find('https://youtu'):]
+                if not draft_url:
+                    draft_url = response_data[response_data.find('https://m.youtu'):]
                 inner_url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url.replace('amp;', ''))
                 print(get_current_time() + " id: " + str(id) + ' Success: YouTube')
