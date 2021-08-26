@@ -31,6 +31,7 @@ def get_current_time():
 @bot.message_handler(content_types=['text'])
 def get_reddit_content(message):
     if "https://www.reddit.com/" in message.text:
+        print(message.chat.id)
         chat_identity = message.chat.title if message.chat.id < 0 else str(message.chat.id)
         chat_identity = "!!!ME!!!" if chat_identity == "153550168" else chat_identity
         chat_identity = "!!!RUSIK!!!" if chat_identity == "258744216" else chat_identity
@@ -165,7 +166,7 @@ def get_reddit_content(message):
                     separator = 'class="_35oEP5zLnhKEbj5BlkTBUA'
                 else:
                     print(get_current_time() + " id: " + str(id) + ' Unsupport multimedia separator')
-                arr = response_data.split('_3BxRNDoASi9FbGX01ewiLg')
+                arr = response_data.split(separator)
                 img_arr = []
                 img_count = 0
                 part_string = ""
@@ -240,8 +241,10 @@ def get_reddit_content(message):
                                      None, message.id)
                 print(get_current_time() + " id: " + str(id) + ' Success: "https://streamable.com/')
             elif 'youtu' in response_data:
-                draft_url = response_data[response_data.find('https://youtu'):]
-                if not draft_url:
+                draft_url = response_data[response_data.find('https://www.youtu'):]
+                if draft_url == ' ':
+                    draft_url = response_data[response_data.find('https://youtu'):]
+                if draft_url == ' ':
                     draft_url = response_data[response_data.find('https://m.youtu'):]
                 inner_url = draft_url[:draft_url.find('"')]
                 bot.reply_to(message, tittle[0:tittle.find(':')] + '\n' + inner_url.replace('amp;', ''))
@@ -256,8 +259,8 @@ def get_reddit_content(message):
                 file.write(
                     get_current_time() + " id: " + str(id) + '\n' + str(message.chat.id) + '\n' + url + '\n' + '\n')
                 file.close()
-                bot.reply_to(message, "image not found")
-                print(get_current_time() + " id: " + str(id) + ' "image not found"')
+                bot.reply_to(message, "Supported content for extract not found")
+                print(get_current_time() + " id: " + str(id) + ' "Supported content for extract not found"')
         except Exception as e:
             bot.send_message('-556187948', "Chat identity: " + chat_identity + '\n' + 'Error: ' + str(e))
             file = open("logs_errors.txt", "a")
