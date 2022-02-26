@@ -79,7 +79,7 @@ def get_reddit_content(message):
                                      "Chat identity: " + chat_identity + '\n' + "Retry - " + str(retry_count))
                     retry_count += 1
             response_data = url_response.read().decode('utf-8')
-            tittle = response_data[response_data.find('<title>') + 7:response_data.find('</title>')]
+            tittle = response_data[response_data.find('<h1 class="_eYtD2XCVieq6emjKBH3m">') + 34:response_data.find('</h1>') + 1]
             tittle = tittle.replace("&#x27;", "'").replace("&quot;", "")
             if '"type":"image"' in response_data:
                 point = response_data.find('"type":"image"')
